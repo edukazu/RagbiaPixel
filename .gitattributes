@@ -1,2 +1,15 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Ragbia Pixel — preservar bytes dos arquivos versionados.
+# O CORE V0.1 possui SHA256SUMS; por isso o Git não deve converter finais de linha.
+* -text
+
+# Binários explícitos
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.webp binary
+*.zip  binary
+*.ico  binary
+*.wav  binary
+*.mp3  binary
+*.ogg  binary
