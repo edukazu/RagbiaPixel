@@ -1,0 +1,10 @@
+'use strict';
+const fs=require('fs'); const vm=require('vm'); const path=require('path');
+const code=fs.readFileSync(path.resolve(__dirname,'..','phaser_map_beta','pursuit-v0.js'),'utf8');
+const context={window:{}}; vm.createContext(context); vm.runInContext(code,context);
+const P=context.window.RagbiaPursuitV0;
+if(!P) throw new Error('RagbiaPursuitV0 não foi exportado');
+const result=P.selfTest();
+if(!result.ok) throw new Error(result.errors.join(' | '));
+if(P.profileFor('warrior').speed!==300 || P.profileFor('archer').speed!==300) throw new Error('velocidade de laboratório incorreta');
+console.log('OK — M001.7 Perseguição V0 selftest.');

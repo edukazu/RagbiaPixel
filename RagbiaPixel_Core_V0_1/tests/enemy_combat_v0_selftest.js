@@ -1,0 +1,17 @@
+'use strict';
+const fs=require('fs'); const vm=require('vm'); const path=require('path');
+const root=path.resolve(__dirname,'..','phaser_map_beta');
+global.window=global;
+vm.runInThisContext(fs.readFileSync(path.join(root,'combat-v0.js'),'utf8'),{filename:'combat-v0.js'});
+vm.runInThisContext(fs.readFileSync(path.join(root,'entities-v0.js'),'utf8'),{filename:'entities-v0.js'});
+const player=RagbiaCombatV0.createPlayerStats();
+const enemy=RagbiaEntitiesV0.createSlimes([{x:0,y:0}])[0];
+let r=RagbiaCombatV0.applyDamage(player, enemy.attack);
+if(!r.applied || r.killed || player.hp!==0.5) throw new Error('Primeiro ataque 0.5 deve deixar Player em 0.5 HP');
+r=RagbiaCombatV0.applyDamage(player, enemy.attack);
+if(!r.killed || player.hp!==0 || player.alive!==false) throw new Error('Segundo ataque 0.5 deve derrotar Player');
+RagbiaCombatV0.respawnPlayer(player);
+if(player.hp!==1 || !player.alive || !player.damageable) throw new Error('Respawn deve restaurar Player HP 1');
+if(enemy.attackRange!==150 || enemy.attackCooldown!==1.60 || enemy.attackWindup!==1.00) throw new Error('Parâmetros do Telegraph Inimigo V1 divergentes');
+if(RagbiaCombatV0.ENEMY_ATTACK_V0.hitAt!==1.00 || RagbiaCombatV0.ENEMY_ATTACK_V0.telegraphStartRatio!==0.28) throw new Error('Telegraph V1 deve resolver no final e iniciar com 28% do raio');
+console.log('OK — M001.5A: dano 0.5 + telegraph V1 (R150 / W1.00 / hit final) validados.');

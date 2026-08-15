@@ -1,0 +1,11 @@
+'use strict';
+const fs=require('fs'); const vm=require('vm'); const path=require('path');
+const root=path.resolve(__dirname,'..','phaser_map_beta');
+const context={window:{}}; vm.createContext(context);
+vm.runInContext(fs.readFileSync(path.join(root,'enemy-ai-v0.js'),'utf8'),context,{filename:'enemy-ai-v0.js'});
+const AI=context.window.RagbiaEnemyAIV0;
+if(!AI) throw new Error('RagbiaEnemyAIV0 não exportado');
+const r=AI.selfTest();
+if(!r.ok) throw new Error(r.errors.join(' | '));
+if(AI.DEFAULTS.visionRange!==420 || AI.DEFAULTS.resetRange!==700 || AI.DEFAULTS.moveSpeed!==165) throw new Error('Parâmetros laboratoriais M001.9 divergentes');
+console.log('OK — M001.9 IA V0: agressivo/passivo, FOV persistente e leash/reset validados.');

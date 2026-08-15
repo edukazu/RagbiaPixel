@@ -1,0 +1,142 @@
+== tests/combat_static_contract.js ==
+OK — Player HP1/ATK1
+OK — Slime baseline HP1/ATK0.5 + passivo-teste HP2
+OK — Melee dano no impacto
+OK — Melee usa attack stat
+OK — Flecha carrega dano
+OK — Flecha colide antes do dano
+OK — Morte usa animação antes de ocultar
+OK — Dano amarelo
+OK — Impacto visual ativo
+OK — Hit-stop V1 ativo
+OK — Knock visual sem mover lógica
+OK — Impacto melee maior que flecha
+OK — Respawn laboratório 3s
+OK — Morte invalida alvo selecionado antes da continuidade
+OK — Telegraph inimigo V1 ativo
+== tests/combat_v0_selftest.js ==
+OK — Combate V0: HP/ATK/dano/morte validados.
+== tests/core_v0_1_static_contract.js ==
+OK — CORE V0.1 debug isolation + baseline markers.
+== tests/dodge_v0_selftest.js ==
+OK — M001.6 Dash/Esquiva V0 selftest.
+== tests/dodge_v0_static_contract.js ==
+OK — 1 carga / CD 1.5s / 140px / 180ms / iframe 120ms
+OK — Direção do dash vem da intenção de movimento
+OK — Sem input usa última direção válida
+OK — Dash usa colisão normal com cenário e entidades
+OK — Facing lock suspenso no dash e restaurado ao fim
+OK — Engage não inicia ataque durante dash
+OK — Ataque atual é cancelado ao iniciar dash
+OK — I-frame impede dano
+OK — Flip Leste/Oeste via scaleX e Norte/Sul via scaleY
+OK — Afterimage e poeira presentes
+OK — Teclado Shift e gamepad B presentes
+OK — Shift+Tab cancela pending do dash
+OK — dodge-v0 carregado antes de game.js
+== tests/enemy_ai_collision_selftest.js ==
+OK — M001.9 moveEntity respeita entidades no chase e pode ignorá-las no reset.
+== tests/enemy_ai_v0_selftest.js ==
+OK — M001.9 IA V0: agressivo/passivo, FOV persistente e leash/reset validados.
+== tests/enemy_ai_v0_static_contract.js ==
+OK — módulo AI carregado
+OK — agressivos e passivos configurados
+OK — FOV inimigo separado
+OK — leash separado
+OK — FOV não encerra aggro
+OK — reset restaura recursos imediatamente
+OK — reset fica invulnerável
+OK — retorno ao spawn existe
+OK — no-reset configurável
+OK — movimento inimigo respeita colisão
+OK — passivo não inicia ataque
+OK — debug mostra FOV/leash
+== tests/enemy_attack_range_alignment_selftest.js ==
+OK — FIX1 usa footprint consistente para CHASE -> ATTACK em diferentes direções.
+== tests/enemy_combat_v0_selftest.js ==
+OK — M001.5A: dano 0.5 + telegraph V1 (R150 / W1.00 / hit final) validados.
+== tests/enemy_state_visual_v0_selftest.js ==
+OK enemy_state_visual_v0_selftest
+== tests/enemy_state_visual_v0_static_contract.js ==
+OK enemy_state_visual_v0_static_contract
+== tests/enemy_telegraph_v1_static_contract.js ==
+OK — contrato estático M001.5A Telegraph Inimigo V1.
+== tests/engage_continuity_selftest.js ==
+OK — M001.8 Continuidade do Engage selftest.
+== tests/engage_continuity_static_contract.js ==
+OK — módulo de continuidade carregado
+OK — estado pending existe
+OK — morte do alvo chama continuidade
+OK — continuidade reutiliza Soft Target
+OK — release cancela pending
+OK — Esc/LT clear cancela pending
+OK — sem sucessor mantém pending
+OK — módulo impede armamento após release
+OK — HUD expõe continuidade
+== tests/entity_collision_selftest.js ==
+OK — colisão jogador ↔ entidade sólida validada.
+OK — move em micropassos respeita entidade sólida e retorna seu ID.
+== tests/impact_v1_static_contract.js ==
+OK — Impacto V1 preservado no M001.5A
+OK — Melee hit-stop 72ms
+OK — Projétil hit-stop 46ms
+OK — Melee shake reforçado
+OK — Projétil shake menor
+OK — Melee knock visual 18px
+OK — Projétil knock visual 11px
+OK — Burst pixelado com núcleo
+OK — Offset visual não contamina lógica
+OK — Morte/respawn preservados
+== tests/passive_reactive_v0_selftest.js ==
+OK — M001.10 passivo reativo: dano -> aggro -> chase -> reset -> passivo.
+== tests/passive_reactive_v0_static_contract.js ==
+OK — slime02 HP2
+OK — provoke exportado
+OK — passivo idle sem aggro
+OK — dano provoca passivo sobrevivente
+OK — reset limpa aggro
+== tests/pursuit_manual_override_selftest.js ==
+OK — M001.7A Manual Override selftest.
+== tests/pursuit_manual_override_static_contract.js ==
+OK — resolveMovement existe
+OK — manual é resolvido antes do chase
+OK — game usa resolveMovement
+OK — estado de override existe
+OK — HUD mostra CHASE MANUAL
+OK — chase automático depende do modo chase
+OK — facing lock permanece após movimento
+OK — Dash continua sendo resolvido antes do bloco de movimento
+== tests/pursuit_v0_selftest.js ==
+OK — M001.7 Perseguição V0 selftest.
+== tests/pursuit_v0_static_contract.js ==
+OK — pursuit-v0 carregado antes de game.js
+OK — Engage + alvo gera plano de perseguição
+OK — Perseguição só opera fora do attackRange
+OK — Perseguição usa delta limitado e 300 px/s
+OK — Chase usa colisão existente
+OK — Dash suspende chase
+OK — Soltar Engage não limpa target
+OK — HUD possui CHASE ON/BLOQUEADO
+OK — Ataque continua exigindo attackRange
+== tests/soft_target_selftest.js ==
+OK — Soft Target respeita FOV e attackRange é independente.
+== tests/static_contract_check.js ==
+OK — startAttack exige selectedTarget
+OK — startAttack exige attackRange
+OK — Soft filtra por targetRange
+OK — Perfis possuem visionRange
+OK — Perfis possuem attackRange
+OK — Engage usa Space
+OK — RT é Engage
+OK — release não limpa target
+OK — Facing lock
+OK — Anel vermelho
+OK — Anel abaixo do slime
+OK — HUD informa fora de alcance
+OK — Sem losango
+OK — Move recebe entidades
+OK — Collision possui collidesEntities
+OK — Entidades sólidas possuem footprint
+
+TOTAL_TEST_FILES=25
+RESULT=PASS

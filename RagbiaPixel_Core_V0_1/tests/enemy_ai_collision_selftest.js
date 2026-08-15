@@ -1,0 +1,13 @@
+'use strict';
+const fs=require('fs'); const vm=require('vm'); const path=require('path');
+const root=path.resolve(__dirname,'..','phaser_map_beta');
+global.window=global;
+vm.runInThisContext(fs.readFileSync(path.join(root,'collision-v0.js'),'utf8'),{filename:'collision-v0.js'});
+const e={id:'mover',alive:true,solid:true,x:700,y:1900,collisionRadius:30,collisionOffsetY:22};
+const blocker={id:'blocker',alive:true,solid:true,x:800,y:1900,collisionRadius:30,collisionOffsetY:22};
+let r=RagbiaCollisionV0.moveEntity(e,120,0,[e,blocker]);
+if(r.x>=770 || !r.blockedX) throw new Error('moveEntity deve respeitar outra entidade sólida');
+e.x=700;e.y=1900;
+r=RagbiaCollisionV0.moveEntity(e,120,0,[e,blocker],{ignoreEntities:true});
+if(r.x<819) throw new Error('reset com ignoreEntities deve conseguir atravessar bloqueio de entidade');
+console.log('OK — M001.9 moveEntity respeita entidades no chase e pode ignorá-las no reset.');

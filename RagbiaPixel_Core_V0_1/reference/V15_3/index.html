@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ragbia — Protótipo Pixel FULL HD V3</title>
+  <style>
+    :root { color-scheme: dark; }
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #080c0d;
+      font-family: Consolas, "Courier New", monospace;
+    }
+    body { display: grid; place-items: center; }
+    #game {
+      display: block;
+      width: min(100vw, calc(100vh * 16 / 9));
+      height: min(100vh, calc(100vw * 9 / 16));
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      background: #10191a;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="game" width="1920" height="1080" tabindex="0" aria-label="Ragbia protótipo pixel jogável"></canvas>
+  <script src="game.js"></script>
+</body>
+</html>

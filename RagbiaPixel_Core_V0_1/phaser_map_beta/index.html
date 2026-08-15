@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ragbia Pixel — CORE V0.1</title>
+  <style>
+    html,body{margin:0;width:100%;height:100%;background:#050806;overflow:hidden}
+    #game-root{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+    canvas{image-rendering:pixelated;image-rendering:crisp-edges;outline:none}
+    #diag{position:fixed;left:18px;top:18px;max-width:min(900px,calc(100% - 36px));box-sizing:border-box;
+      color:#f2f5ee;background:#111a16;border:2px solid #6f9475;padding:16px 20px;z-index:9999;
+      font:18px/1.45 Consolas,monospace;white-space:pre-wrap;box-shadow:0 8px 40px #0008}
+    #diag.ok{display:none}
+    #diag.err{color:#fff0e7;border-color:#d97858;background:#23120e}
+  </style>
+</head>
+<body>
+  <div id="game-root"></div>
+  <div id="diag">Ragbia Pixel CORE V0.1 — carregando…</div>
+  <script>
+    (() => {
+      const el = document.getElementById('diag');
+      let done = false;
+      let running = false;
+      const showError = (msg) => {
+        done = true;
+        el.className = 'err';
+        const title = running ? 'ERRO DE EXECUÇÃO — CORE V0.1' : 'ERRO DE INICIALIZAÇÃO — CORE V0.1';
+        el.textContent = title + '\n\n' + msg + '\n\nEnvie esta mensagem caso o build não abra corretamente.';
+      };
+      window.RagbiaBoot = {
+        ok(msg){ running = true; done = true; el.className = 'ok'; el.textContent = msg || 'OK'; },
+        fail: showError
+      };
+      window.addEventListener('error', e => showError((e.message || 'Erro desconhecido') + (e.filename ? `\n${e.filename}:${e.lineno || 0}:${e.colno || 0}` : '')));
+      window.addEventListener('unhandledrejection', e => showError(String(e.reason && (e.reason.stack || e.reason.message) || e.reason || 'Promise rejeitada')));
+      setTimeout(() => { if (!done) showError('Timeout: o Phaser não concluiu a inicialização em 8 segundos.'); }, 8000);
+    })();
+  </script>
+  <script src="vendor/phaser.min.js" onerror="RagbiaBoot.fail('Phaser 4.2.1 não foi carregado. Execute INICIAR_CORE_V0_1.bat.')"></script>
+  <script src="baseline-art.js"></script>
+  <script src="map-beta.js"></script>
+  <script src="collision-v0.js"></script>
+  <script src="entities-v0.js"></script>
+  <script src="targeting-soft.js"></script>
+  <script src="combat-v0.js"></script>
+  <script src="dodge-v0.js"></script>
+  <script src="pursuit-v0.js"></script>
+  <script src="engage-continuity-v0.js"></script>
+  <script src="enemy-ai-v0.js"></script>
+  <script src="enemy-state-visual-v0.js"></script>
+  <script>
+    if (typeof Phaser === 'undefined') {
+      RagbiaBoot.fail('A biblioteca Phaser não definiu window.Phaser. O arquivo vendor/phaser.min.js pode estar ausente ou inválido.');
+    } else if (typeof RagbiaCollisionV0 === 'undefined') {
+      RagbiaBoot.fail('collision-v0.js não definiu RagbiaCollisionV0.');
+    } else if (typeof RagbiaEntitiesV0 === 'undefined') {
+      RagbiaBoot.fail('entities-v0.js não definiu RagbiaEntitiesV0.');
+    } else if (typeof RagbiaTargetingSoft === 'undefined') {
+      RagbiaBoot.fail('targeting-soft.js não definiu RagbiaTargetingSoft.');
+    } else if (typeof RagbiaCombatV0 === 'undefined') {
+      RagbiaBoot.fail('combat-v0.js não definiu RagbiaCombatV0.');
+    } else if (typeof RagbiaDodgeV0 === 'undefined') {
+      RagbiaBoot.fail('dodge-v0.js não definiu RagbiaDodgeV0.');
+    } else if (typeof RagbiaPursuitV0 === 'undefined') {
+      RagbiaBoot.fail('pursuit-v0.js não definiu RagbiaPursuitV0.');
+    } else if (typeof RagbiaEngageContinuityV0 === 'undefined') {
+      RagbiaBoot.fail('engage-continuity-v0.js não definiu RagbiaEngageContinuityV0.');
+    } else if (typeof RagbiaEnemyAIV0 === 'undefined') {
+      RagbiaBoot.fail('enemy-ai-v0.js não definiu RagbiaEnemyAIV0.');
+    } else if (typeof RagbiaEnemyStateVisualV0 === 'undefined') {
+      RagbiaBoot.fail('enemy-state-visual-v0.js não definiu RagbiaEnemyStateVisualV0.');
+    } else {
+      const s = document.createElement('script');
+      s.src = 'game.js';
+      s.onerror = () => RagbiaBoot.fail('game.js não pôde ser carregado.');
+      document.body.appendChild(s);
+    }
+  </script>
+</body>
+</html>

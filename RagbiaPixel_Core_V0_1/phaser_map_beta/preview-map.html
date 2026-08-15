@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Ragbia Pixel — Preview Mapa Beta 01 M001.1C</title>
+<style>
+html,body{margin:0;background:#101510;color:#e7eadf;font-family:Consolas,monospace}
+main{padding:20px}
+h1{font-size:20px;margin:0 0 12px}
+canvas{width:1152px;height:672px;image-rendering:pixelated;display:block;border:2px solid #71866f;background:#1c271c}
+p{margin:10px 0 0;color:#b9c6b7}
+</style>
+</head>
+<body>
+<main>
+<h1>M001.1C — Mapa Beta 01 / preview lógico 1152×672 (4× no jogo)</h1>
+<canvas id="preview"></canvas>
+<p>Preview da camada visual apenas. Gameplay continua em 4608×2688.</p>
+</main>
+<script src="map-beta.js"></script>
+<script>RagbiaMapBeta.renderPreview(document.getElementById('preview'));</script>
+</body>
+</html>

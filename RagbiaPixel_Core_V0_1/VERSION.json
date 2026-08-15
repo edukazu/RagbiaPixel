@@ -1,0 +1,11 @@
+{
+  "project": "Ragbia Pixel",
+  "baseline": "CORE V0.1",
+  "milestone": "M001.12",
+  "runtime": "Phaser 4.2.1",
+  "language": "JavaScript",
+  "date": "2026-08-15",
+  "referenceBaseline": "Ragbia Pixel FULL HD V15.3",
+  "visualSafetyBaseline": "V12.1",
+  "debugDefault": false
+}

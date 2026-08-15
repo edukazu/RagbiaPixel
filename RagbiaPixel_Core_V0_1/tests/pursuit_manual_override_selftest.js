@@ -1,0 +1,14 @@
+'use strict';
+const fs=require('fs'); const vm=require('vm'); const path=require('path');
+const code=fs.readFileSync(path.resolve(__dirname,'..','phaser_map_beta','pursuit-v0.js'),'utf8');
+const context={window:{}}; vm.createContext(context); vm.runInContext(code,context);
+const P=context.window.RagbiaPursuitV0;
+if(!P) throw new Error('RagbiaPursuitV0 não exportado');
+const far=P.plan({x:400,y:0},0,0,'warrior',130);
+const manual=P.resolveMovement(far,0,1,300,0.1);
+if(manual.mode!=='manual' || !manual.manualOverride) throw new Error('manual não venceu chase');
+if(Math.abs(manual.dx)>1e-6 || Math.abs(manual.dy-30)>1e-6) throw new Error('delta manual incorreto');
+const resumed=P.resolveMovement(far,0,0,300,0.1);
+if(resumed.mode!=='chase' || resumed.manualOverride) throw new Error('chase não reassumiu');
+if(Math.abs(resumed.dx-30)>1e-6 || Math.abs(resumed.dy)>1e-6) throw new Error('delta chase retomado incorreto');
+console.log('OK — M001.7A Manual Override selftest.');
