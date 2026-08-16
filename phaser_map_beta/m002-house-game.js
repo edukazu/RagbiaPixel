@@ -13,22 +13,26 @@
       this.moving = false;
       this.debugMode = false;
       this.lastHit = null;
-      this.prevPadB = false;
+    }
+
+    preload() {
+      this.load.image('house-art-v1', 'assets/house_avo_pixel_v1.png');
     }
 
     create() {
       this.playerSession = window.RagbiaPlayerSession || null;
-      if (!this.playerSession) throw new Error('M002.2 exige sessão de personagem criada pela tela inicial.');
+      if (!this.playerSession) throw new Error('M002.2A.1 exige sessão de personagem criada pela tela inicial.');
 
-      this.cameras.main.setBackgroundColor('#15251a');
+      this.cameras.main.setBackgroundColor('#10150f');
       this.buildTextures();
-      this.houseMap = RagbiaHouseMapV0.create(this);
+      this.buildHouseVisual();
 
-      this.player = this.add.image(RagbiaHouseMapV0.spawn.x, RagbiaHouseMapV0.spawn.y, 'apprentice-up-idle');
+      const spawn = RagbiaHouseCollisionV1.spawn;
+      this.player = this.add.image(spawn.x, spawn.y, 'apprentice-up-idle');
       this.player.setOrigin(0.5, 92 / 128);
-      this.player.setDepth(30);
+      this.player.setDepth(this.player.y);
 
-      this.collisionGraphics = this.add.graphics().setDepth(900).setVisible(false);
+      this.collisionGraphics = this.add.graphics().setDepth(3000).setVisible(false);
       this.keys = this.input.keyboard.addKeys({
         up: 'W', down: 'S', left: 'A', right: 'D',
         arrowUp: 'UP', arrowDown: 'DOWN', arrowLeft: 'LEFT', arrowRight: 'RIGHT',
@@ -41,19 +45,18 @@
         if (!this.debugMode) this.collisionGraphics.clear();
       });
 
-      // A casa inteira cabe na viewport; câmera ainda usa limites reais da área.
       const cam = this.cameras.main;
-      cam.setBounds(0, 0, RagbiaHouseMapV0.WORLD_W, RagbiaHouseMapV0.WORLD_H);
+      cam.setBounds(0, 0, VIEW_W, VIEW_H);
       cam.roundPixels = true;
 
       this.buildHud();
 
-      const collisionTest = RagbiaHouseCollisionV0.selfTest();
-      if (!collisionTest.ok) throw new Error(`Autoteste Casa do Avô falhou: ${collisionTest.errors.join(' | ')}`);
-      const spawnTest = RagbiaHouseCollisionV0.collidesAnchor(this.player.x, this.player.y);
-      if (spawnTest.hit) throw new Error(`Spawn da Casa do Avô inválido: ${spawnTest.shape && spawnTest.shape.id}`);
+      const collisionTest = RagbiaHouseCollisionV1.selfTest();
+      if (!collisionTest.ok) throw new Error(`Autoteste M002.2A.1 falhou: ${collisionTest.errors.join(' | ')}`);
+      const spawnTest = RagbiaHouseCollisionV1.collidesAnchor(this.player.x, this.player.y);
+      if (spawnTest.hit) throw new Error(`Spawn M002.2A.1 inválido: ${spawnTest.shape && spawnTest.shape.id}`);
 
-      if (window.RagbiaBoot) window.RagbiaBoot.ok('Ragbia Pixel M002.2 — Casa do Avô carregada');
+      if (window.RagbiaBoot) window.RagbiaBoot.ok('Ragbia Pixel M002.2A.1 — Pixelado Melhorado carregado');
     }
 
     buildTextures() {
@@ -63,24 +66,47 @@
       }
     }
 
-    buildHud() {
-      const hud = this.add.graphics().setDepth(1000).setScrollFactor(0);
-      hud.fillStyle(0x07100d, 0.82).fillRect(18, 18, 760, 112);
-      hud.lineStyle(3, 0x6f9475, 0.78).strokeRect(18, 18, 760, 112);
-      hud.fillStyle(0x07100d, 0.78).fillRect(18, VIEW_H - 82, VIEW_W - 36, 64);
+    buildHouseVisual() {
+      this.houseBackground = this.add.image(0, 0, 'house-art-v1').setOrigin(0, 0).setDepth(0);
 
-      this.add.text(42, 34, 'Casa do Avô — M002.2', {
-        fontFamily: 'Consolas, monospace', fontSize: '27px', color: '#f4f3df', fontStyle: 'bold'
-      }).setDepth(1001).setScrollFactor(0);
-      this.add.text(42, 72, `${this.playerSession.name} — ${this.playerSession.className}`, {
-        fontFamily: 'Consolas, monospace', fontSize: '21px', color: '#bcd3b8'
-      }).setDepth(1001).setScrollFactor(0);
-      this.add.text(42, VIEW_H - 61, 'Mover: WASD/Setas/analógico   F: Tela cheia   C: Colisão técnica', {
-        fontFamily: 'Consolas, monospace', fontSize: '20px', color: '#d9e3d6'
-      }).setDepth(1001).setScrollFactor(0);
-      this.debugLabel = this.add.text(VIEW_W - 42, 34, 'M002.2\nDEBUG OFF', {
-        fontFamily: 'Consolas, monospace', fontSize: '19px', color: '#8ea096', align: 'right'
-      }).setOrigin(1, 0).setDepth(1001).setScrollFactor(0);
+      // Prova de depth layering: recortes da própria arte retornam à frente do personagem
+      // quando seus pés estão ao norte do objeto. Isso mantém a lógica 2D e cria leitura pseudo-2.5D.
+      const source = this.textures.get('house-art-v1').getSourceImage();
+      this.occluders = [
+        this.createOccluder(source, 'occ-table', 690, 470, 480, 285, 650),
+        this.createOccluder(source, 'occ-desk', 300, 675, 365, 205, 810),
+        this.createOccluder(source, 'occ-rack', 1360, 555, 270, 275, 745)
+      ];
+    }
+
+    createOccluder(source, key, x, y, w, h, depth) {
+      const canvas = document.createElement('canvas');
+      canvas.width = VIEW_W; canvas.height = VIEW_H;
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(source, x, y, w, h, x, y, w, h);
+      this.textures.addCanvas(key, canvas);
+      return this.add.image(0, 0, key).setOrigin(0, 0).setDepth(depth);
+    }
+
+    buildHud() {
+      const hud = this.add.graphics().setDepth(4000).setScrollFactor(0);
+      hud.fillStyle(0x07100d, 0.76).fillRoundedRect(18, 18, 540, 96, 8);
+      hud.lineStyle(2, 0x728a69, 0.72).strokeRoundedRect(18, 18, 540, 96, 8);
+      hud.fillStyle(0x07100d, 0.72).fillRoundedRect(18, VIEW_H - 66, 900, 48, 7);
+
+      this.add.text(38, 32, 'Casa do Avô — M002.2A.1', {
+        fontFamily: 'Consolas, monospace', fontSize: '24px', color: '#f4f0dc', fontStyle: 'bold'
+      }).setDepth(4001).setScrollFactor(0);
+      this.add.text(38, 69, `${this.playerSession.name} — ${this.playerSession.className}`, {
+        fontFamily: 'Consolas, monospace', fontSize: '19px', color: '#b9cfad'
+      }).setDepth(4001).setScrollFactor(0);
+      this.add.text(38, VIEW_H - 54, 'Mover: WASD/Setas/analógico    F: Tela cheia    C: Colisão/Depth técnico', {
+        fontFamily: 'Consolas, monospace', fontSize: '17px', color: '#d9e3d6'
+      }).setDepth(4001).setScrollFactor(0);
+      this.debugLabel = this.add.text(VIEW_W - 28, 26, 'M002.2A.1\nDEBUG OFF', {
+        fontFamily: 'Consolas, monospace', fontSize: '17px', color: '#a0aaa0', align: 'right'
+      }).setOrigin(1, 0).setDepth(4001).setScrollFactor(0);
     }
 
     readPad() {
@@ -104,18 +130,17 @@
       if (!this.debugMode) return;
       const g = this.collisionGraphics;
       g.clear();
-      g.lineStyle(3, 0xffcf5b, .9);
-      for (const s of RagbiaHouseCollisionV0.shapes) {
-        if (s.type === 'rect') g.strokeRect(s.x, s.y, s.w, s.h);
-      }
-      const fy = this.player.y + RagbiaHouseCollisionV0.PLAYER_FOOT_OFFSET_Y;
+      g.lineStyle(3, 0xffcf5b, .88);
+      for (const s of RagbiaHouseCollisionV1.shapes) g.strokeRect(s.x, s.y, s.w, s.h);
+      g.lineStyle(3, 0x63d4ff, .95);
+      for (const z of RagbiaHouseCollisionV1.interactionZones) g.strokeRect(z.x, z.y, z.w, z.h);
+      const fy = this.player.y + RagbiaHouseCollisionV1.PLAYER_FOOT_OFFSET_Y;
       g.lineStyle(3, 0x74e6ff, .95);
-      g.strokeCircle(this.player.x, fy, RagbiaHouseCollisionV0.PLAYER_RADIUS);
-      if (this.lastHit) {
-        this.debugLabel.setText(`M002.2\nDEBUG ON\n${this.lastHit.id}`);
-      } else {
-        this.debugLabel.setText('M002.2\nDEBUG ON');
-      }
+      g.strokeCircle(this.player.x, fy, RagbiaHouseCollisionV1.PLAYER_RADIUS);
+
+      // Linhas dos três depth thresholds testados.
+      g.lineStyle(2, 0xd774ff, .66);
+      for (const y of [650, 745, 810]) g.lineBetween(0, y, VIEW_W, y);
     }
 
     update(_time, delta) {
@@ -131,8 +156,8 @@
       this.moving = len > 0.01;
       if (this.moving) {
         x /= len; y /= len;
-        const speed = 270;
-        const result = RagbiaHouseCollisionV0.move(this.player.x, this.player.y, x * speed * dt, y * speed * dt);
+        const speed = 250;
+        const result = RagbiaHouseCollisionV1.move(this.player.x, this.player.y, x * speed * dt, y * speed * dt);
         this.player.x = result.x; this.player.y = result.y;
         this.lastHit = result.hit || null;
         this.walkT += dt * 7;
@@ -146,12 +171,20 @@
       const tex = this.moving ? `apprentice-${this.dir}-walk-${frame}` : `apprentice-${this.dir}-idle`;
       if (this.player.texture.key !== tex) this.player.setTexture(tex);
 
+      // Depth pelo footprint: quanto mais ao sul, mais à frente.
+      this.player.setDepth(this.player.y);
+
       if (this.debugMode) this.renderCollisionDebug();
       if (this.debugLabel) {
         if (!this.debugMode) {
-          this.debugLabel.setText('M002.2\nDEBUG OFF');
-          this.debugLabel.setColor('#8ea096');
-        } else this.debugLabel.setColor('#ffd36a');
+          this.debugLabel.setText('M002.2A.1\nDEBUG OFF');
+          this.debugLabel.setColor('#a0aaa0');
+        } else {
+          const nearRack = RagbiaHouseCollisionV1.zoneContains(RagbiaHouseCollisionV1.interactionZones[0], this.player.x, this.player.y);
+          const hit = this.lastHit ? `\nHIT ${this.lastHit.id}` : '';
+          this.debugLabel.setText(`M002.2A.1\nDEBUG ON\nDEPTH ${Math.round(this.player.y)}${hit}${nearRack ? '\nRACK ZONE' : ''}`);
+          this.debugLabel.setColor('#ffd36a');
+        }
       }
     }
   }
@@ -161,7 +194,7 @@
     parent: 'game-root',
     width: VIEW_W,
     height: VIEW_H,
-    backgroundColor: '#15251a',
+    backgroundColor: '#10150f',
     pixelArt: true,
     antialias: false,
     roundPixels: true,
@@ -208,7 +241,7 @@
     screen.classList.add('ready');
     screen.setAttribute('aria-hidden', 'false');
     setTimeout(() => input.focus(), 0);
-    if (window.RagbiaBoot) window.RagbiaBoot.ready('Ragbia Pixel M002.2 — tela inicial pronta');
+    if (window.RagbiaBoot) window.RagbiaBoot.ready('Ragbia Pixel M002.2A.1 — tela inicial pronta');
   }
 
   window.RagbiaM002 = { startSession };

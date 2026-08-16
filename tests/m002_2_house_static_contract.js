@@ -6,16 +6,18 @@ const html = fs.readFileSync(path.join(root, 'phaser_map_beta', 'index.html'), '
 const game = fs.readFileSync(path.join(root, 'phaser_map_beta', 'm002-house-game.js'), 'utf8');
 const map = fs.readFileSync(path.join(root, 'phaser_map_beta', 'house-map-v0.js'), 'utf8');
 
+// O protótipo procedural M002.2 permanece no repositório como histórico/auditoria.
 for (const token of ['apprentice-art-v0.js', 'house-map-v0.js', 'house-collision-v0.js', "s.src = 'm002-house-game.js'"]) {
-  assert(html.includes(token), `index sem runtime M002.2: ${token}`);
+  assert(html.includes(token), `index sem legado auditável M002.2: ${token}`);
 }
-for (const token of ['Casa do Avô — M002.2', 'RagbiaHouseMapV0.create(this)', 'RagbiaHouseCollisionV0.move', 'apprentice-${this.dir}', 'this.playerSession.name']) {
-  assert(game.includes(token), `game M002.2 sem contrato: ${token}`);
-}
-assert(!game.includes('toggleClass'), 'M002.2 não deve permitir troca técnica de classe');
-assert(!game.includes('createSlimes'), 'M002.2 não deve carregar Slimes na Casa do Avô');
-assert(!game.includes('ENGAGE'), 'M002.2 não deve exibir Engage no runtime normal da casa');
 for (const token of ['drawBed', 'drawFireplace', 'drawTable', 'drawWeaponRack', 'drawDesk']) {
-  assert(map.includes(token), `mapa da casa sem elemento de referência: ${token}`);
+  assert(map.includes(token), `mapa procedural M002.2 perdeu elemento histórico: ${token}`);
 }
+// Runtime ativo evoluiu para o laboratório visual M002.2A.1.
+for (const token of ['M002.2A.1', 'RagbiaHouseCollisionV1.move', 'apprentice-${this.dir}', 'this.playerSession.name']) {
+  assert(game.includes(token), `runtime ativo da casa sem continuidade: ${token}`);
+}
+assert(!game.includes('toggleClass'), 'Casa não deve permitir troca técnica de classe');
+assert(!game.includes('createSlimes'), 'Casa não deve carregar Slimes');
+assert(!game.includes('ENGAGE'), 'Casa não deve exibir Engage no runtime normal');
 console.log('m002_2_house_static_contract: OK');

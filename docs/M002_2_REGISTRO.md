@@ -53,3 +53,6 @@ Esses itens permanecem nos próximos passos do M002.
 ## Próximo passo após aprovação
 
 **M002.3 — Estado Aprendiz + Interação com Suporte de Armas.**
+
+
+> Continuidade: o protótipo funcional M002.2 foi preservado, mas sua direção visual ficou em revisão e originou o `M002.2A.1 — Pixelado Melhorado`.

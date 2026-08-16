@@ -1,0 +1,16 @@
+RAGBIA PIXEL — M002.2A.1 PIXELADO MELHORADO
+
+1. Confirme a branch: m002-casa-avo
+2. Extraia o conteúdo deste ZIP na RAIZ do repositório RagbiaPixel.
+3. Autorize substituição dos arquivos existentes.
+4. Execute RODAR_TESTES_CORE.bat.
+5. Execute INICIAR_CORE_V0_1.bat.
+
+Avaliar:
+- ganho visual do cenário;
+- integração do Aprendiz com a arte;
+- colisões;
+- profundidade ao contornar mesa/escrivaninha/suporte;
+- tecla C mostra colisores, zona de interação futura e thresholds de depth.
+
+Ainda NÃO há escolha de classe/interação do suporte: isso continua bloqueado pelo laboratório visual.
