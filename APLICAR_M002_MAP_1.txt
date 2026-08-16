@@ -1,0 +1,12 @@
+RAGBIA PIXEL — M002-MAP.1
+
+1. Branch obrigatória: m002-map-pipeline
+2. Extraia este ZIP na raiz do repositório.
+3. Este patch ADICIONA arquivos; não substitui map-beta.js, collision-v0.js ou game.js.
+4. Rode RODAR_TESTES_CORE.bat.
+5. Rode INICIAR_M002_MAP_1_AUDITORIA.bat.
+6. Pressione C no preview para alternar o overlay semântico.
+7. O runtime normal deve permanecer visualmente idêntico ao CORE V0.1.
+
+Commit sugerido após validar:
+M002-MAP.1 — Add semantic map representation and audit

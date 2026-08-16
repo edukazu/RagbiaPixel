@@ -1,0 +1,24 @@
+const assert = require('assert');
+const path = require('path');
+const m = require(path.join(__dirname, '..', 'maps', 'semantic', 'map-beta-v0.js'));
+
+assert.strictEqual(m.schema, 'ragbia-map-semantic-v0');
+assert.strictEqual(m.id, 'map-beta-01');
+assert.deepStrictEqual([m.world.worldWidth, m.world.worldHeight], [4608, 2688]);
+assert.deepStrictEqual([m.world.artWidth, m.world.artHeight, m.world.pixelScale], [1152, 672, 4]);
+assert.deepStrictEqual(m.gameplay.playerSpawnWorld, { x: 720, y: 1910 });
+assert.strictEqual(m.gameplay.slimeSpawnsWorld.length, 8);
+assert.deepStrictEqual(m.gameplay.slimeSpawnsWorld[7], { x: 4100, y: 720 });
+assert.strictEqual(m.settlements.length, 2);
+assert.strictEqual(m.settlements.reduce((s,v)=>s+v.structures.length,0), 4);
+assert.strictEqual(m.settlements.reduce((s,v)=>s+v.fences.length,0), 4);
+assert.strictEqual(m.vegetation.staticTrees.length, 33);
+assert.strictEqual(m.settlements.reduce((s,v)=>s+v.trees.length,0), 4);
+assert.strictEqual(m.vegetation.clusters.reduce((s,v)=>s+v.count,0), 66);
+assert.strictEqual(m.vegetation.staticTrees.length + m.settlements.reduce((s,v)=>s+v.trees.length,0) + m.vegetation.clusters.reduce((s,v)=>s+v.count,0), 103);
+assert.strictEqual(m.collision.buildingFootprints.length, 4);
+assert.strictEqual(m.collision.fenceFootprints.length, 4);
+assert.strictEqual(m.collision.waterPolygons.length, 2);
+assert.strictEqual(m.landmarks[0].physicalRocks.length, 2);
+assert.strictEqual(m.regions.length, 6);
+console.log('m002_map1_semantic_selftest: OK');
