@@ -81,6 +81,7 @@
     }
 
     create() {
+      this.playerSession = window.RagbiaPlayerSession || null;
       this.cameras.main.setBackgroundColor('#13251a');
       this.buildTextures();
       this.mapVisual = RagbiaMapBeta.create(this);
@@ -273,19 +274,27 @@
 
     buildHud() {
       const hud = this.add.graphics().setDepth(1000).setScrollFactor(0);
-      hud.fillStyle(0x07100d, 0.86).fillRect(18, 18, 840, 126);
-      hud.lineStyle(3, 0x6f9475, 0.8).strokeRect(18, 18, 840, 126);
+      // M002.1 FIX1: identidade ganhou uma linha própria para não colidir com o título.
+      hud.fillStyle(0x07100d, 0.86).fillRect(18, 18, 920, 156);
+      hud.lineStyle(3, 0x6f9475, 0.8).strokeRect(18, 18, 920, 156);
       hud.fillStyle(0x07100d, 0.82).fillRect(18, VIEW_H - 112, VIEW_W - 36, 94);
 
-      this.add.text(42, 36, 'Ragbia Pixel — CORE V0.1', {
+      this.add.text(42, 34, 'Ragbia Pixel — CORE V0.1 / M002.1', {
         fontFamily: 'Consolas, monospace', fontSize: '27px', color: '#f4f3df', fontStyle: 'bold'
       }).setDepth(1001).setScrollFactor(0);
 
-      this.hudStatus = this.add.text(42, 82, '', {
-        fontFamily: 'Consolas, monospace', fontSize: '22px', color: '#ffd967'
+      const identity = this.playerSession
+        ? `${this.playerSession.name} — ${this.playerSession.className}`
+        : 'Sessão sem personagem';
+      this.add.text(42, 70, identity, {
+        fontFamily: 'Consolas, monospace', fontSize: '21px', color: '#bcd3b8'
       }).setDepth(1001).setScrollFactor(0);
 
-      this.hudControls = this.add.text(42, VIEW_H - 86, 'Mover: WASD/Setas/analógico   DASH: Shift/B   Soft: TAB/RB   Campo: Shift+TAB/LB+RB   ENGAGE: Espaço/RT   Limpar: Esc/LT   Classe: Q/E ou Y   C: DEBUG', {
+      this.hudStatus = this.add.text(42, 108, '', {
+        fontFamily: 'Consolas, monospace', fontSize: '21px', color: '#ffd967'
+      }).setDepth(1001).setScrollFactor(0);
+
+      this.hudControls = this.add.text(42, VIEW_H - 86, 'Mover: WASD/Setas/analógico   DASH: Shift/B   Soft: TAB/RB   Campo: Shift+TAB/LB+RB   ENGAGE: Espaço/RT   Limpar: Esc/LT   C: DEBUG', {
         fontFamily: 'Consolas, monospace', fontSize: '21px', color: '#d9e3d6'
       }).setDepth(1001).setScrollFactor(0);
 
@@ -1565,7 +1574,10 @@
       const iframeText = this.dashIFrameT > 0 ? ' I-FRAME' : '';
 
       // HUD normal: não expõe PASSIVO/AGRESSIVO, FOV, leash ou estado interno da IA.
-      let status = `${this.classId === 'warrior' ? 'Guerreiro' : 'Arqueiro'} HP ${this.playerStats.hp}/${this.playerStats.maxHP} ATK ${this.playerStats.attack}${targetText}${engageText}${dashText}${iframeText}`;
+      // M002.1 FIX1: identidade oficial vem do estado da sessão; a classe técnica do
+      // laboratório do CORE continua interna até a escolha de arma do M002.4.
+      const displayClass = this.playerSession?.className || (this.classId === 'warrior' ? 'Guerreiro' : 'Arqueiro');
+      let status = `${displayClass} HP ${this.playerStats.hp}/${this.playerStats.maxHP} ATK ${this.playerStats.attack}${targetText}${engageText}${dashText}${iframeText}`;
 
       if (this.debugMode) {
         const blocked = (this.blockedX || this.blockedY)
@@ -1595,7 +1607,7 @@
         const reactiveTest = this.entities.find(e => e.labRole === 'passive-reactive-test');
         const reactiveText = reactiveTest ? ` PTEST ${reactiveTest.id.toUpperCase()} HP${reactiveTest.hp}/${reactiveTest.maxHP}` : '';
         const aiText = `  |  AI A${aggressiveCount}/P${passiveCount} AGGRO${aggroCount} RESET${resetCount}${reactiveText}`;
-        status += `\nDEBUG | ${region} X${Math.round(this.player.x)} Y${Math.round(this.player.y)}${debugTarget}${continuityText}${chaseText}${poolText}${rangeText}${aiText}${blocked} | EVENTO ${this.lastCombatEvent}`;
+        status += `\nDEBUG | ${region} X${Math.round(this.player.x)} Y${Math.round(this.player.y)} | LAB CLASS ${this.classId.toUpperCase()}${debugTarget}${continuityText}${chaseText}${poolText}${rangeText}${aiText}${blocked} | EVENTO ${this.lastCombatEvent}`;
       }
 
       this.hudStatus.setText(status);
@@ -1626,5 +1638,59 @@
     scene: MapBetaScene
   };
 
-  new Phaser.Game(config);
+  let gameInstance = null;
+
+  function startSession(rawName) {
+    if (gameInstance) return gameInstance;
+
+    const state = RagbiaPlayerStateV0.create(rawName);
+    const validation = RagbiaPlayerStateV0.validate(state);
+    if (!validation.ok) throw new Error(`Estado inicial inválido: ${validation.errors.join(' | ')}`);
+
+    window.RagbiaPlayerSession = state;
+    const startScreen = document.getElementById('start-screen');
+    if (startScreen) {
+      startScreen.classList.remove('ready');
+      startScreen.setAttribute('aria-hidden', 'true');
+    }
+
+    gameInstance = new Phaser.Game(config);
+    return gameInstance;
+  }
+
+  function setupStartScreen() {
+    const screen = document.getElementById('start-screen');
+    const input = document.getElementById('character-name');
+    const button = document.getElementById('play-button');
+    const error = document.getElementById('start-error');
+    if (!screen || !input || !button || !error) {
+      throw new Error('Tela inicial M002.1 incompleta no DOM.');
+    }
+
+    const submit = () => {
+      error.textContent = '';
+      try {
+        startSession(input.value);
+      } catch (err) {
+        error.textContent = err && err.message ? err.message : String(err);
+        input.focus();
+      }
+    };
+
+    button.addEventListener('click', submit);
+    input.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter') {
+        ev.preventDefault();
+        submit();
+      }
+    });
+
+    screen.classList.add('ready');
+    screen.setAttribute('aria-hidden', 'false');
+    setTimeout(() => input.focus(), 0);
+    if (window.RagbiaBoot) window.RagbiaBoot.ready('Ragbia Pixel M002.1 — tela inicial pronta');
+  }
+
+  window.RagbiaM002 = { startSession };
+  setupStartScreen();
 })();
