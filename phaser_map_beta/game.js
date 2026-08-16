@@ -84,6 +84,12 @@
       this.cameras.main.setBackgroundColor('#13251a');
       this.buildTextures();
       this.mapVisual = RagbiaMapBeta.create(this);
+      this.mapVisualGenerated = RagbiaMapBetaGeneratedV1.create(this);
+      this.mapVisualGeneratedV11 = RagbiaMapBetaGeneratedV11.create(this);
+      this.mapVisualModes = ['generated-v1-1', 'generated-v1', 'core'];
+      this.mapVisualModeIndex = 0;
+      this.mapVisualMode = this.mapVisualModes[this.mapVisualModeIndex];
+      this.applyMapVisualMode();
 
       // M001.3: os Slimes deixam de ser apenas imagens soltas e passam a ter
       // um registro lógico mínimo de entidade. A view continua sendo Phaser.
@@ -119,11 +125,12 @@
         arrowUp: 'UP', arrowDown: 'DOWN', arrowLeft: 'LEFT', arrowRight: 'RIGHT',
         engage: 'SPACE', dodge: 'SHIFT',
         classNext: 'E', classPrev: 'Q', target: 'TAB', targetClear: 'ESC',
-        fullscreen: 'F', collisionDebug: 'C'
+        fullscreen: 'F', collisionDebug: 'C', mapVisualToggle: 'V'
       });
 
       this.input.keyboard.on('keydown-TAB', e => e.preventDefault());
       this.input.keyboard.on('keydown-F', () => this.scale.toggleFullscreen());
+      this.input.keyboard.on('keydown-V', () => this.toggleMapVisualMode());
       this.input.keyboard.on('keydown-C', () => {
         this.debugMode = !this.debugMode;
         // Mantém collisionDebug como alias interno para módulos/rotinas já validados.
@@ -170,7 +177,9 @@
       cam.roundPixels = true;
 
       const mapKeys = ['map-beta-0-0','map-beta-1-0','map-beta-2-0','map-beta-0-1','map-beta-1-1','map-beta-2-1'];
-      const missingMap = mapKeys.filter(key => !this.textures.exists(key));
+      const generatedMapKeys = ['map-generated-v1-0-0','map-generated-v1-1-0','map-generated-v1-2-0','map-generated-v1-0-1','map-generated-v1-1-1','map-generated-v1-2-1'];
+      const generatedV11MapKeys = ['map-generated-v1-1-0-0','map-generated-v1-1-1-0','map-generated-v1-1-2-0','map-generated-v1-1-0-1','map-generated-v1-1-1-1','map-generated-v1-1-2-1'];
+      const missingMap = mapKeys.concat(generatedMapKeys, generatedV11MapKeys).filter(key => !this.textures.exists(key));
       if (missingMap.length) {
         const msg = `Chunks visuais do mapa ausentes do cache: ${missingMap.join(', ')}`;
         if (window.RagbiaBoot) window.RagbiaBoot.fail(msg);
@@ -271,6 +280,26 @@
       }
     }
 
+    applyMapVisualMode() {
+      const isCore = this.mapVisualMode === 'core';
+      const isV1 = this.mapVisualMode === 'generated-v1';
+      const isV11 = this.mapVisualMode === 'generated-v1-1';
+      if (this.mapVisual && this.mapVisual.chunks) this.mapVisual.chunks.forEach(img => img.setVisible(isCore));
+      if (this.mapVisualGenerated && this.mapVisualGenerated.chunks) this.mapVisualGenerated.chunks.forEach(img => img.setVisible(isV1));
+      if (this.mapVisualGeneratedV11 && this.mapVisualGeneratedV11.chunks) this.mapVisualGeneratedV11.chunks.forEach(img => img.setVisible(isV11));
+    }
+
+    toggleMapVisualMode() {
+      this.mapVisualModeIndex = (this.mapVisualModeIndex + 1) % this.mapVisualModes.length;
+      this.mapVisualMode = this.mapVisualModes[this.mapVisualModeIndex];
+      this.applyMapVisualMode();
+      this.lastCombatEvent = this.mapVisualMode === 'generated-v1-1'
+        ? 'MAPA: OUTDOOR KIT V1.1 QUALITY PASS'
+        : this.mapVisualMode === 'generated-v1'
+          ? 'MAPA: OUTDOOR KIT V1 (SEMÂNTICO)'
+          : 'MAPA: CORE ORIGINAL';
+    }
+
     buildHud() {
       const hud = this.add.graphics().setDepth(1000).setScrollFactor(0);
       hud.fillStyle(0x07100d, 0.86).fillRect(18, 18, 840, 126);
@@ -285,7 +314,7 @@
         fontFamily: 'Consolas, monospace', fontSize: '22px', color: '#ffd967'
       }).setDepth(1001).setScrollFactor(0);
 
-      this.hudControls = this.add.text(42, VIEW_H - 86, 'Mover: WASD/Setas/analógico   DASH: Shift/B   Soft: TAB/RB   Campo: Shift+TAB/LB+RB   ENGAGE: Espaço/RT   Limpar: Esc/LT   Classe: Q/E ou Y   C: DEBUG', {
+      this.hudControls = this.add.text(42, VIEW_H - 86, 'Mover: WASD/Setas/analógico   DASH: Shift/B   Soft: TAB/RB   ENGAGE: Espaço/RT   Limpar: Esc/LT   Classe: Q/E ou Y   V: MAPA V1.1/V1/CORE   C: DEBUG', {
         fontFamily: 'Consolas, monospace', fontSize: '21px', color: '#d9e3d6'
       }).setDepth(1001).setScrollFactor(0);
 
@@ -1600,7 +1629,8 @@
 
       this.hudStatus.setText(status);
       if (this.debugLabel) {
-        this.debugLabel.setText(this.debugMode ? 'CORE V0.1\nDEBUG ON' : 'CORE V0.1\nDEBUG OFF');
+        const mapModeLabel = this.mapVisualMode === 'generated-v1-1' ? 'MAP V1.1' : this.mapVisualMode === 'generated-v1' ? 'MAP V1' : 'MAP CORE';
+        this.debugLabel.setText(this.debugMode ? `CORE V0.1\n${mapModeLabel}\nDEBUG ON` : `CORE V0.1\n${mapModeLabel}\nDEBUG OFF`);
         this.debugLabel.setColor(this.debugMode ? '#ffd36a' : '#8ea096');
       }
 

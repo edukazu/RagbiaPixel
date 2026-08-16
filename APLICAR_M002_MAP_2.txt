@@ -1,0 +1,13 @@
+RAGBIA PIXEL — M002-MAP.2 — OUTDOOR KIT V1
+
+Pré-requisito: M002-MAP.1 aplicado e validado na branch m002-map-pipeline.
+
+1. Extraia este ZIP na RAIZ do repositório.
+2. Autorize substituição de `phaser_map_beta/index.html` e `phaser_map_beta/game.js`.
+3. Execute RODAR_TESTES_CORE.bat.
+4. Execute INICIAR_CORE_V0_1.bat.
+5. O runtime inicia com MAP V1.
+6. Pressione V para comparar MAP V1 <-> MAP CORE.
+7. Teste movimento, ponte, Slimes, targeting e combate em ambos os modos.
+
+Não altere colisões nem o mapa semântico durante esta validação.

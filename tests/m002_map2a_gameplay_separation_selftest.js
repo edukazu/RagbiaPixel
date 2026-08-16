@@ -1,0 +1,11 @@
+const assert=require('assert');const fs=require('fs');const path=require('path');
+const root=path.join(__dirname,'..');
+const semantic=fs.readFileSync(path.join(root,'maps','semantic','map-beta-v0.js'),'utf8');
+const collision=fs.readFileSync(path.join(root,'phaser_map_beta','collision-v0.js'),'utf8');
+const gen=fs.readFileSync(path.join(root,'phaser_map_beta','map-beta-generated-v1-1.js'),'utf8');
+assert(gen.includes('RagbiaMapSemanticV0'),'V1.1 deve consumir mapa semântico');
+assert(gen.includes('M.gameplay.playerSpawnWorld'),'marcador do spawn deve derivar da semântica');
+assert(!gen.includes('RagbiaCollisionV0'),'renderer V1.1 não deve controlar colisão');
+assert(semantic.includes('ragbia-map-semantic-v0'),'mapa semântico base ausente');
+assert(collision.includes('RagbiaCollisionV0'),'colisão CORE ausente');
+console.log('m002_map2a_gameplay_separation_selftest: OK');

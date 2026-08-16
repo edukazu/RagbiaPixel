@@ -41,6 +41,13 @@
   <script src="vendor/phaser.min.js" onerror="RagbiaBoot.fail('Phaser 4.2.1 não foi carregado. Execute INICIAR_CORE_V0_1.bat.')"></script>
   <script src="baseline-art.js"></script>
   <script src="map-beta.js"></script>
+  <script src="../maps/semantic/map-beta-v0.js"></script>
+  <script src="../maps/kits/outdoor-v1.js"></script>
+  <script src="outdoor-kit-v1-renderer.js"></script>
+  <script src="map-beta-generated-v1.js"></script>
+  <script src="../maps/kits/outdoor-v1-1.js"></script>
+  <script src="outdoor-kit-v1-1-renderer.js"></script>
+  <script src="map-beta-generated-v1-1.js"></script>
   <script src="collision-v0.js"></script>
   <script src="entities-v0.js"></script>
   <script src="targeting-soft.js"></script>
@@ -53,6 +60,20 @@
   <script>
     if (typeof Phaser === 'undefined') {
       RagbiaBoot.fail('A biblioteca Phaser não definiu window.Phaser. O arquivo vendor/phaser.min.js pode estar ausente ou inválido.');
+    } else if (typeof RagbiaMapSemanticV0 === 'undefined') {
+      RagbiaBoot.fail('maps/semantic/map-beta-v0.js não definiu RagbiaMapSemanticV0.');
+    } else if (typeof RagbiaOutdoorKitV1Data === 'undefined') {
+      RagbiaBoot.fail('Outdoor Kit V1 data ausente.');
+    } else if (typeof RagbiaOutdoorKitV1Renderer === 'undefined') {
+      RagbiaBoot.fail('Outdoor Kit V1 renderer ausente.');
+    } else if (typeof RagbiaMapBetaGeneratedV1 === 'undefined') {
+      RagbiaBoot.fail('map-beta-generated-v1.js não definiu RagbiaMapBetaGeneratedV1.');
+    } else if (typeof RagbiaOutdoorKitV11Data === 'undefined') {
+      RagbiaBoot.fail('maps/kits/outdoor-v1-1.js não definiu RagbiaOutdoorKitV11Data.');
+    } else if (typeof RagbiaOutdoorKitV11Renderer === 'undefined') {
+      RagbiaBoot.fail('outdoor-kit-v1-1-renderer.js não definiu RagbiaOutdoorKitV11Renderer.');
+    } else if (typeof RagbiaMapBetaGeneratedV11 === 'undefined') {
+      RagbiaBoot.fail('map-beta-generated-v1-1.js não definiu RagbiaMapBetaGeneratedV11.');
     } else if (typeof RagbiaCollisionV0 === 'undefined') {
       RagbiaBoot.fail('collision-v0.js não definiu RagbiaCollisionV0.');
     } else if (typeof RagbiaEntitiesV0 === 'undefined') {

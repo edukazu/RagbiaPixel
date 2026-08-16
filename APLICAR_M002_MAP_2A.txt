@@ -1,0 +1,11 @@
+RAGBIA PIXEL — M002-MAP.2A — OUTDOOR KIT V1.1
+
+1. Confirme a branch: m002-map-pipeline
+2. Confirme que M002-MAP.1 e M002-MAP.2 já estão aplicados.
+3. Extraia este ZIP na raiz do repositório e substitua os arquivos existentes quando solicitado.
+4. Rode RODAR_TESTES_CORE.bat.
+5. Rode INICIAR_CORE_V0_1.bat.
+6. O jogo inicia em MAP V1.1.
+7. Pressione V para circular MAP V1.1 -> MAP V1 -> MAP CORE.
+
+Avalie por família: estrada, grama, água/margens, árvores, pedras/arbustos, casas e ponte.

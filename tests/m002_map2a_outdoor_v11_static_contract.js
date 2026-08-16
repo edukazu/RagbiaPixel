@@ -1,0 +1,13 @@
+const assert=require('assert');const fs=require('fs');const path=require('path');
+const root=path.join(__dirname,'..');
+const kit=fs.readFileSync(path.join(root,'maps','kits','outdoor-v1-1.js'),'utf8');
+const renderer=fs.readFileSync(path.join(root,'phaser_map_beta','outdoor-kit-v1-1-renderer.js'),'utf8');
+const gen=fs.readFileSync(path.join(root,'phaser_map_beta','map-beta-generated-v1-1.js'),'utf8');
+const game=fs.readFileSync(path.join(root,'phaser_map_beta','game.js'),'utf8');
+for(const token of ['outdoor-v1.1','grassTufts','roadEdgeIntrusions','shorePebbles','tree-young']) assert(kit.includes(token),`kit V1.1 sem ${token}`);
+for(const token of ['organicPatch','roadEdgeDetail','grassTuft','drawBridge','drawHouse','drawTree','drawRiver']) assert(renderer.includes(token),`renderer V1.1 sem ${token}`);
+assert(gen.includes('map-generated-v1-1-'), 'gerador V1.1 sem namespace de chunks');
+assert(game.includes("['generated-v1-1', 'generated-v1', 'core']"),'runtime não preserva comparação V1.1/V1/CORE');
+assert(game.includes('RagbiaMapBetaGeneratedV11.create(this)'),'runtime não cria V1.1');
+assert(game.includes("'MAP V1.1'"),'HUD não identifica V1.1');
+console.log('m002_map2a_outdoor_v11_static_contract: OK');
