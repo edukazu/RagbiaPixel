@@ -1,0 +1,11 @@
+RAGBIA PIXEL — M002.2B.0 — MICROTESTE PRÁTICO
+
+1. Confirme a branch: m002-casa-avo
+2. Confirme que o GitHub Desktop mostra 0 mudanças antes de aplicar.
+3. Extraia este ZIP na RAIZ do repositório.
+4. Nenhum arquivo existente do runtime principal precisa ser substituído.
+5. Rode RODAR_TESTES_CORE.bat.
+6. Execute INICIAR_MICROTESTE_M002_2B0.bat.
+7. Avalie SOMENTE a linguagem visual do pequeno recorte.
+
+Este patch NÃO altera o checkpoint M002.2A.1 e NÃO utiliza a ilustração como asset.

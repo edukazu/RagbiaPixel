@@ -1,0 +1,10 @@
+RAGBIA PIXEL — M002.2B.0.2
+
+1. Confirme a branch: m002-casa-avo
+2. Confirme que o repositório está limpo antes de aplicar.
+3. Extraia este ZIP na RAIZ do repositório.
+4. Rode RODAR_TESTES_CORE.bat.
+5. Execute INICIAR_MICROTESTE_M002_2B0_2.bat.
+6. Avalie principalmente janela, lareira e escala humana.
+
+Este patch adiciona a iteração final do microteste autoral antes da pausa de lapidação.
