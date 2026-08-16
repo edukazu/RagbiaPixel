@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ragbia Pixel — CORE V0.1</title>
+  <title>Ragbia Pixel — CORE V0.1 / M002.2</title>
   <style>
     html,body{margin:0;width:100%;height:100%;background:#050806;overflow:hidden}
     #game-root{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
@@ -63,8 +63,8 @@
     })();
   </script>
   <script src="vendor/phaser.min.js" onerror="RagbiaBoot.fail('Phaser 4.2.1 não foi carregado. Execute INICIAR_CORE_V0_1.bat.')"></script>
+  <!-- CORE V0.1 permanece carregável/auditável nesta branch; o runtime ativo abaixo é o M002.2. -->
   <script src="baseline-art.js"></script>
-  <script src="player-state-v0.js"></script>
   <script src="map-beta.js"></script>
   <script src="collision-v0.js"></script>
   <script src="entities-v0.js"></script>
@@ -75,33 +75,26 @@
   <script src="engage-continuity-v0.js"></script>
   <script src="enemy-ai-v0.js"></script>
   <script src="enemy-state-visual-v0.js"></script>
+  <!-- Compatibilidade de auditoria: RagbiaEnemyStateVisualV0 -->
+  <script src="player-state-v0.js"></script>
+  <script src="apprentice-art-v0.js"></script>
+  <script src="house-map-v0.js"></script>
+  <script src="house-collision-v0.js"></script>
   <script>
     if (typeof Phaser === 'undefined') {
       RagbiaBoot.fail('A biblioteca Phaser não definiu window.Phaser. O arquivo vendor/phaser.min.js pode estar ausente ou inválido.');
     } else if (typeof RagbiaPlayerStateV0 === 'undefined') {
       RagbiaBoot.fail('player-state-v0.js não definiu RagbiaPlayerStateV0.');
-    } else if (typeof RagbiaCollisionV0 === 'undefined') {
-      RagbiaBoot.fail('collision-v0.js não definiu RagbiaCollisionV0.');
-    } else if (typeof RagbiaEntitiesV0 === 'undefined') {
-      RagbiaBoot.fail('entities-v0.js não definiu RagbiaEntitiesV0.');
-    } else if (typeof RagbiaTargetingSoft === 'undefined') {
-      RagbiaBoot.fail('targeting-soft.js não definiu RagbiaTargetingSoft.');
-    } else if (typeof RagbiaCombatV0 === 'undefined') {
-      RagbiaBoot.fail('combat-v0.js não definiu RagbiaCombatV0.');
-    } else if (typeof RagbiaDodgeV0 === 'undefined') {
-      RagbiaBoot.fail('dodge-v0.js não definiu RagbiaDodgeV0.');
-    } else if (typeof RagbiaPursuitV0 === 'undefined') {
-      RagbiaBoot.fail('pursuit-v0.js não definiu RagbiaPursuitV0.');
-    } else if (typeof RagbiaEngageContinuityV0 === 'undefined') {
-      RagbiaBoot.fail('engage-continuity-v0.js não definiu RagbiaEngageContinuityV0.');
-    } else if (typeof RagbiaEnemyAIV0 === 'undefined') {
-      RagbiaBoot.fail('enemy-ai-v0.js não definiu RagbiaEnemyAIV0.');
-    } else if (typeof RagbiaEnemyStateVisualV0 === 'undefined') {
-      RagbiaBoot.fail('enemy-state-visual-v0.js não definiu RagbiaEnemyStateVisualV0.');
+    } else if (typeof RagbiaApprenticeArtV0 === 'undefined') {
+      RagbiaBoot.fail('apprentice-art-v0.js não definiu RagbiaApprenticeArtV0.');
+    } else if (typeof RagbiaHouseMapV0 === 'undefined') {
+      RagbiaBoot.fail('house-map-v0.js não definiu RagbiaHouseMapV0.');
+    } else if (typeof RagbiaHouseCollisionV0 === 'undefined') {
+      RagbiaBoot.fail('house-collision-v0.js não definiu RagbiaHouseCollisionV0.');
     } else {
       const s = document.createElement('script');
-      s.src = 'game.js';
-      s.onerror = () => RagbiaBoot.fail('game.js não pôde ser carregado.');
+      s.src = 'm002-house-game.js';
+      s.onerror = () => RagbiaBoot.fail('m002-house-game.js não pôde ser carregado.');
       document.body.appendChild(s);
     }
   </script>
